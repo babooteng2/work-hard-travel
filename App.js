@@ -1,37 +1,38 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet,
    Text,
    View,
    TouchableOpacity,
-   TouchableHighlight,
-   TouchableWithoutFeedback,
-   Pressable,
+   TextInput,
  } from "react-native";
 import { theme } from "./colors"
 
 export default function App() {
+  const [working, setWorking] = useState(true);
+  const [text, setText] = useState("");
+  const travel = () => setWorking(false);
+  const work = () => setWorking(true);
+  const onChangeText = (payload) => setText(payload)
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
       <View style={styles.header}>
-        <TouchableOpacity activeOpacity={0.9}>
-          <Text style={styles.btnText}>Work</Text>
+        <TouchableOpacity onPress={work}>
+          <Text style={{...styles.btnText, color: working ? theme.activate : theme.grey}}>Work</Text>
         </TouchableOpacity>
-        <TouchableHighlight 
-          underlayColor="#dddddd"
-          activeOpacity={.5}
-        >
-        <Text style={styles.btnText}>Travel</Text>
-        </TouchableHighlight>
-        <TouchableWithoutFeedback>
-        <Text style={styles.btnText}>Wow</Text>
-        </TouchableWithoutFeedback>
-        <Pressable onPress={()=>console.log("pressed")}>
-        <Text style={styles.btnText}>Woww</Text>
-        </Pressable>
-      </View>
+        <TouchableOpacity onPress={travel}>
+          <Text style={{...styles.btnText, color: !working ? theme.activate : theme.grey}}>Travel</Text>
+        </TouchableOpacity>
+      </View>      
+      <TextInput
+        value={text}
+        onChangeText={onChangeText}
+        placeholder={working ? "Add a To Do" : "Where do you wanna go?"} 
+        placeholderTextColor={"green"}
+        style={styles.input}
+      />      
     </View>
   );
 }
@@ -51,5 +52,13 @@ const styles = StyleSheet.create({
     color: theme.activate,
     fontSize: 44,
     fontWeight: "600",
+  },
+  input: {
+    backgroundColor: "white",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 10,
+    fontSize: 20,
   }
 });
