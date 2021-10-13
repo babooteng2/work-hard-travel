@@ -11,9 +11,22 @@ import { theme } from "./colors"
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
+  const [toDos, setToDos] = useState({})
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
   const onChangeText = (payload) => setText(payload)
+  const addToDo = () => {
+    if( text === "") return
+    // save to do
+    const newToDos = Object.assign(
+      {},
+      toDos,
+      {[Date.now()]:{text, work:working}}
+    )
+    setToDos( newToDos )
+    console.log(toDos)
+    setText("")
+  }
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
@@ -28,9 +41,11 @@ export default function App() {
       </View>      
       <TextInput
         value={text}
+        onSubmitEditing={addToDo}
         onChangeText={onChangeText}
-        placeholder={working ? "Add a To Do" : "Where do you wanna go?"} 
-        placeholderTextColor={"green"}
+        placeholder={working ? "Add a To Do" : "Where do you wanna go?"}         
+        returnKeyType="done"
+        placeholderTextColor={theme.grey}
         style={styles.input}
       />      
     </View>
@@ -60,5 +75,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     fontSize: 20,
+    color: theme.grey,
   }
 });
