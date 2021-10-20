@@ -13,22 +13,31 @@ import { theme } from "./colors"
 import { Fontisto } from '@expo/vector-icons'; 
 
 const STORAGE_KEY = "@toDos";
+const TAB_KEY = "@working";
 
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
   const [toDos, setToDos] = useState({})
-  useEffect(()=>{loadToDos()},[])
-  const travel = () => setWorking(false);
-  const work = () => setWorking(true);
+  useEffect(()=>{
+    loadAsyncStorage();
+  },[])
+  
+  const travel = () => {setWorking(false);saveWhereTabIs();};
+  const work = () => {setWorking(true);saveWhereTabIs();};
   const onChangeText = (payload) => setText(payload)
   const saveToDos = async (toSave) => {    
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   }
-  const loadToDos = async () => {
+  const loadAsyncStorage = async () => {
     try{
-      const s = await AsyncStorage.getItem(STORAGE_KEY)      
+      // toDos
+      const s = await AsyncStorage.getItem(STORAGE_KEY);
       setToDos( JSON.parse(s));
+      // working
+      const w = await AsyncStorage.getItem(TAB_KEY);
+      console.log( w, "@@@", JSON.parse(w))
+      setWorking(JSON.parse(w));
     }catch(e){
       console.log(e)
     }    
@@ -63,6 +72,9 @@ export default function App() {
       }
      ]
     )
+  }
+  const saveWhereTabIs = async () => {
+    await AsyncStorage.setItem(TAB_KEY, JSON.stringify(!working));    
   }
   return (
     <View style={styles.container}>
